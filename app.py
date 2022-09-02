@@ -56,7 +56,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scopes))
 user_id = sp.me()['id']
 
 artists = sp.current_user_top_artists(limit=50, offset=0)
-print(artists)
+# print(artists)
 
 artist = random.choice(artists["items"])
 aid = artist["id"]

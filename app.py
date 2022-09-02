@@ -45,23 +45,28 @@ def playlist_append(playlist_id, artist_id, duration, current_duration):
                 tracks=artist_all_tracks, duration=duration, current_duration=current_duration)
 
 
-scope = "playlist-modify-private"
+scopes = ["playlist-modify-private", "user-top-read"]
 
-GEORGE = "7FIoB5PHdrMZVC3q2HE5MS"
-JOHN = "4x1nvY2FN8jxqAFA0DA02H"
 
 minutes_25 = 1500000
 minutes_5 = 300000
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scopes))
 
 user_id = sp.me()['id']
 
+artists = sp.current_user_top_artists(limit=50, offset=0)
+print(artists)
+
+artist = random.choice(artists["items"])
+aid = artist["id"]
+
+
 playlist = sp.user_playlist_create(
-    user_id, name=f"Pomodoro 1 Session {datetime.date.today()}", public=False, collaborative=False, description=f"Generated {datetime.date.today()}")
+    user_id, name=f"Pomodoro 1 Session {datetime.date.today()} playlist of {artist['name']}", public=False, collaborative=False, description=f"Generated {datetime.date.today()}")
 
 print(playlist["id"])
 playlist_id = playlist["id"]
 
-playlist_append(playlist_id, GEORGE, minutes_25, 0)
-playlist_append(playlist_id, JOHN, minutes_5, 0)
+playlist_append(playlist_id, aid, minutes_25, 0)
+# playlist_append(playlist_id, JOHN, minutes_5, 0)

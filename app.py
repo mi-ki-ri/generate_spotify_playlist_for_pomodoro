@@ -16,7 +16,7 @@ def appendWhile(playlist_id, tracks, duration, current_duration):
         randomChoice = random.choice(tracks)
         print(randomChoice["duration_ms"])
 
-        if (current_duration + randomChoice["duration_ms"] - minutes_5 > duration):
+        if (current_duration + randomChoice["duration_ms"] > duration):
             break
         else:
             flg = False

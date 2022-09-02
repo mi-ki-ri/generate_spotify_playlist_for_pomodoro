@@ -11,17 +11,3 @@ export SPOTIPY_REDIRECT_URI=http://127.0.0.1:9090
 
 python app.py
 ```
-
-## Custamization
-
-Specify Artist ID, like
-
-```python app.py
-GEORGE = "7FIoB5PHdrMZVC3q2HE5MS"
-JOHN = "4x1nvY2FN8jxqAFA0DA02H"
-```
-
-```python app.py
-playlist_append(playlist_id, GEORGE, minutes_25, 0) # GEORGE Songs 25 minites
-playlist_append(playlist_id, JOHN, minutes_5, 0) # JOHN Songs 5 minites
-```

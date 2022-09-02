@@ -11,3 +11,11 @@ export SPOTIPY_REDIRECT_URI=http://127.0.0.1:9090
 
 python app.py
 ```
+
+## TODO
+
+Generate App or WebApp.
+
+```sh
+pyinstaller app.py --onefile --add-data '.env:.'
+```

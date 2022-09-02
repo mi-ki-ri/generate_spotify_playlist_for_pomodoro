@@ -33,7 +33,7 @@ def appendWhile(playlist_id, tracks, duration, current_duration):
 
 def playlist_append(playlist_id, artist_id, duration, current_duration):
     artist_all_tracks = []
-    albums = sp.artist_albums(artist_id=artist_id, limit=50)
+    albums = sp.artist_albums(artist_id=artist_id, limit=25)
     for album in albums["items"]:
         time.sleep(0.1)
         print("ALBUM")

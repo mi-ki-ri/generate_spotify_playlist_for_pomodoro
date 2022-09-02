@@ -1,4 +1,5 @@
 import datetime
+from locale import locale_encoding_alias
 from pprint import pprint
 import time
 import spotipy
@@ -14,7 +15,7 @@ def appendWhile(playlist_id, tracks, duration, current_duration):
             "tracks"])["tracks"]
 
         randomChoice = random.choice(tracks)
-        print(randomChoice["duration_ms"])
+        print(randomChoice["name"], f"{randomChoice['duration_ms']}ms")
 
         if (current_duration + randomChoice["duration_ms"] > duration):
             break
@@ -31,18 +32,23 @@ def appendWhile(playlist_id, tracks, duration, current_duration):
                     playlist_id=playlist_id, items=[randomChoice["id"]])
 
 
-def playlist_append(playlist_id, artist_id, duration, current_duration):
-    artist_all_tracks = []
-    albums = sp.artist_albums(artist_id=artist_id, limit=25)
-    for album in albums["items"]:
-        time.sleep(0.1)
-        print("ALBUM")
-        album_tracks = sp.album_tracks(album_id=album["id"])
-        for track in album_tracks["items"]:
-            artist_all_tracks.append(track)
+def playlist_append(playlist_id, user_id, duration, current_duration):
+    user_all_tracks = []
+    tracks = []
+
+    short_terms = sp.current_user_top_tracks(
+        limit=50, offset=0, time_range="short_term")["items"]
+    mid_terms = sp.current_user_top_tracks(
+        limit=50, offset=0, time_range="medium_term")["items"]
+    long_terms = sp.current_user_top_tracks(
+        limit=50, offset=0, time_range="long_term")["items"]
+
+    user_all_tracks.extend(short_terms)
+    user_all_tracks.extend(mid_terms)
+    user_all_tracks.extend(long_terms)
 
     appendWhile(playlist_id=playlist_id,
-                tracks=artist_all_tracks, duration=duration, current_duration=current_duration)
+                tracks=user_all_tracks, duration=duration, current_duration=current_duration)
 
 
 scopes = ["playlist-modify-private", "user-top-read"]
@@ -55,18 +61,13 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scopes))
 
 user_id = sp.me()['id']
 
-artists = sp.current_user_top_artists(limit=50, offset=0)
-# print(artists)
-
-artist = random.choice(artists["items"])
-aid = artist["id"]
-
+dt_now = datetime.datetime.now()
+timestr = dt_now.strftime('%Y-%m-%d %H:%M:%S')
 
 playlist = sp.user_playlist_create(
-    user_id, name=f"Pomodoro 1 Session {datetime.date.today()} playlist of {artist['name']}", public=False, collaborative=False, description=f"Generated {datetime.date.today()}")
+    user_id, name=f"Pomodoro Session @{timestr}", public=False, collaborative=False, description=f"")
 
 print(playlist["id"])
 playlist_id = playlist["id"]
 
-playlist_append(playlist_id, aid, minutes_25, 0)
-# playlist_append(playlist_id, JOHN, minutes_5, 0)
+playlist_append(playlist_id, user_id, minutes_25, 0)
